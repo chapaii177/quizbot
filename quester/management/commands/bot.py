@@ -1,8 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 
-
-
-
 class Command(BaseCommand):
     help = "Команды для управления ботом"
 
