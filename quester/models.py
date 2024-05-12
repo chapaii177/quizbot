@@ -10,6 +10,9 @@ class Player(models.Model):
     status = models.BooleanField(default=True,
                                  verbose_name='Статус')
 
+    def __str__(self):
+        return self.name
+
 class Question(models.Model):
     text = models.CharField(max_length=1000,
                             verbose_name = 'Текст вопроса',
@@ -23,11 +26,17 @@ class Question(models.Model):
                                        verbose_name='Количество правильных ответов')
     answer_users = models.ManyToManyField(Player, blank=True)
 
+    def __str__(self):
+        return self.text[:30] + '...'
+
 class Answer(models.Model):
     questions = models.ForeignKey(Question,
                                   help_text="Вопрос",
                                   on_delete=models.CASCADE)
     answer_text = models.CharField(max_length=100,
                                    verbose_name='Ответ на вопрос')
+
+    def __str__(self):
+        return self.answer_text
 
 
