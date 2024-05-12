@@ -1,7 +1,7 @@
 import telebot
 from quester.models import Question, Player, Answer
 from chigame.settings import BOT_TOKEN
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -9,6 +9,8 @@ bot = telebot.TeleBot(BOT_TOKEN)
 #markup = types.InlineKeyboardMarkup()
 #btn1 = types.InlineKeyboardButton(text='Наш сайт', url='https://habr.com/ru/all/')
 #markup.add(btn1)
+
+DEBUG_BOT = True
 
 @bot.message_handler(commands = ['start'])
 def start_func(message):
@@ -58,5 +60,15 @@ def answer_func(message):
 
     else:
         bot.send_message(message.from_user.id, f"Вопрос №{question_id} уже не активен или не создан")
+
+def send_question():
+    questions = Question.objects.filter(date__gte = datetime.now(), date__lte = datetime.now() + timedelta(minutes=20))
+    if DEBUG_BOT:
+        bot.send_message(140901794, f'Нашлось {len(questions)} вопросов. Время между {datetime.now()} и {datetime.now() + timedelta(minutes=20)}')
+    if questions:
+        players = Player.objects.filter(status = True)
+        if players:
+            for player in players:
+                bot.send_message(player.telegram_id, question.text)
 
 bot.polling(none_stop=True, interval=0)
