@@ -5,7 +5,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'start',
+            '--start',
+            '-s',
             action='store_true',
             default=False,
             help='Запуск бота'
