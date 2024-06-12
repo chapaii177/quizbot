@@ -143,3 +143,7 @@ STATIC_ROOT =  os.path.join(BASE_DIR, 'quizbot-static/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BOT_TOKEN =  os.getenv('BOT_TOKEN')
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
