@@ -21,7 +21,8 @@ class Question(models.Model):
                             help_text='Datetime')
     comment = models.CharField(max_length=500,
                                verbose_name = "Comment",
-                               help_text="Comment")
+                               help_text="Comment",
+                               blank=True)
     answer_count = models.IntegerField(default=0,
                                        verbose_name='Number of correct answers')
     answer_users = models.ManyToManyField(Player, blank=True)
@@ -41,9 +42,9 @@ class Question(models.Model):
                 self.answer_users.add(player)
                 self.answer_count += 1
                 self.save()
-                return f"The answer to the question №{self.id} is correct!!"
+                return f"The answer to the question №{self.id} is correct!!" + (f"\nComment: {self.comment}" if self.comment)
             else:
-                return f"he answer to the question №{self.id} is correct, but the other players were faster"
+                return f"he answer to the question №{self.id} is correct, but the other players were faster" + (f"\nComment: {self.comment}" if self.comment)
         else:
             return f"The answer to the question №{self.id} is wrong"
 
