@@ -30,22 +30,22 @@ class Question(models.Model):
         return self.text[:30] + '...'
 
     def check_answer(self, answer_text, player):
-        answers = Answer.objects.filter(questions=question,
+        answers = Answer.objects.filter(questions=self,
                                         answer_text__iexact=answer_text)
         if answers:
             if player in self.answer_users.all():
-               return f"You've already answered the question №{question.id}"
+               return f"You've already answered the question №{self.id}"
             elif self.answer_count < 10:
                 player.score += 1
                 player.save()
                 self.answer_users.add(player)
                 self.answer_count += 1
                 self.save()
-                return f"The answer to the question №{question.id} is correct!!"
+                return f"The answer to the question №{self.id} is correct!!"
             else:
-                return f"he answer to the question №{question.id} is correct, but the other players were faster"
+                return f"he answer to the question №{self.id} is correct, but the other players were faster"
         else:
-            return f"The answer to the question №{question.id} is wrong"
+            return f"The answer to the question №{self.id} is wrong"
 
 
 class Answer(models.Model):
