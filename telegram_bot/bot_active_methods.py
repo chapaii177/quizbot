@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import re
 
 class QuizBot(telebot.TeleBot):
-    def send_question(self, question):
+    def send_question(self, question, player):
         players = Player.objects.filter(status = True)
         if players:
             for player in players:

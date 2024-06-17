@@ -30,6 +30,11 @@ class Question(models.Model):
     def __str__(self):
         return self.text[:30] + '...'
 
+    def save(self, *args, **kwargs):
+        send_question.apply_async(eta=self.date, args=[self])
+        super().save(*args, **kwargs)
+
+
     def check_answer(self, answer_text, player):
         answers = Answer.objects.filter(questions=self,
                                         answer_text__iexact=answer_text)
