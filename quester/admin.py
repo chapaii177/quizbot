@@ -1,5 +1,5 @@
 from django.contrib import admin
-from quester.models import Player, Question, Answer
+from quester.models import Player, Question, Answer, News
 
 class AnswerInline(admin.StackedInline):
     model = Answer
@@ -14,7 +14,11 @@ class QuestionAdmin(admin.ModelAdmin):
 class AnswerAdmin(admin.ModelAdmin):
     pass
 
+class NewsAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)
+admin.site.register(News, NewsAdmin)
 

@@ -1,4 +1,5 @@
 from django.db import models
+
 # Create your models here.
 
 class Player(models.Model):
@@ -8,7 +9,9 @@ class Player(models.Model):
     score = models.IntegerField(default=0,
                                 verbose_name='Score')
     status = models.BooleanField(default=True,
-                                 verbose_name='Subscribe status')
+                                 verbose_name='Question subscribe status')
+    status_news = models.BooleanField(default=True,
+                                 verbose_name='News subscribe status')
 
     def __str__(self):
         return self.name
@@ -25,14 +28,16 @@ class Question(models.Model):
                                blank=True)
     answer_count = models.IntegerField(default=0,
                                        verbose_name='Number of correct answers')
+    prizes_count = models.IntegerField(default=10,
+                                       verbose_name='Number of prizes')
     answer_users = models.ManyToManyField(Player, blank=True)
+    task_id = models.CharField(max_length=500,
+                               verbose_name = "Celery task id",
+                               help_text="Celery task id",
+                               blank=True)
 
     def __str__(self):
         return self.text[:30] + '...'
-
-    def save(self, *args, **kwargs):
-        send_question.apply_async(eta=self.date, args=[self])
-        super().save(*args, **kwargs)
 
 
     def check_answer(self, answer_text, player):
@@ -41,15 +46,15 @@ class Question(models.Model):
         if answers:
             if player in self.answer_users.all():
                return f"You've already answered the question №{self.id}"
-            elif self.answer_count < 10:
+            elif self.answer_count < self.prizes_count:
                 player.score += 1
                 player.save()
                 self.answer_users.add(player)
                 self.answer_count += 1
                 self.save()
-                return f"The answer to the question №{self.id} is correct!!" + (f"\nComment: {self.comment}" if self.comment)
+                return f"The answer to the question №{self.id} is correct!!"
             else:
-                return f"he answer to the question №{self.id} is correct, but the other players were faster" + (f"\nComment: {self.comment}" if self.comment)
+                return f"he answer to the question №{self.id} is correct, but the other players were faster" 
         else:
             return f"The answer to the question №{self.id} is wrong"
 
@@ -64,4 +69,19 @@ class Answer(models.Model):
     def __str__(self):
         return self.answer_text
 
+class News(models.Model):
+    title = models.CharField(max_length=1000,
+                             verbose_name = 'News title',
+                             help_text='News title')
+    text = models.CharField(max_length=1000,
+                            verbose_name = 'News',
+                            help_text='News')
+    date = models.DateTimeField(verbose_name = 'Datetime',
+                            help_text='Datetime')
+    task_id = models.CharField(max_length=500,
+                               verbose_name = "Celery task id",
+                               help_text="Celery task id",
+                               blank=True)
 
+    def __str__(self):
+        return self.title[:30] + '...'
