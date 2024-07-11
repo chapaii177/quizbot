@@ -17,12 +17,16 @@ class Player(models.Model):
         return self.name
 
 class Question(models.Model):
-    text = models.CharField(max_length=1000,
+    text = models.TextField(max_length=1500,
                             verbose_name = 'Question text',
                             help_text='Question text')
+    image = models.ImageField(upload_to='/question_images',
+                              verbose_name='Question image',
+                              help_text='Question image',
+                              blank=True)
     date = models.DateTimeField(verbose_name = 'Datetime',
                             help_text='Datetime')
-    comment = models.CharField(max_length=500,
+    comment = models.TextField(max_length=500,
                                verbose_name = "Comment",
                                help_text="Comment",
                                blank=True)
@@ -70,10 +74,14 @@ class Answer(models.Model):
         return self.answer_text
 
 class News(models.Model):
-    title = models.CharField(max_length=1000,
+    title = models.TextField(max_length=1000,
                              verbose_name = 'News title',
                              help_text='News title')
-    text = models.CharField(max_length=1000,
+    image = models.ImageField(upload_to='/question_images',
+                              verbose_name='Question image',
+                              help_text='Question image',
+                              blank=True)
+    text = models.TextField(max_length=2000,
                             verbose_name = 'News',
                             help_text='News')
     date = models.DateTimeField(verbose_name = 'Datetime',
